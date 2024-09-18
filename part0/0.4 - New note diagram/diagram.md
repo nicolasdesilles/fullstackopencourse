@@ -9,7 +9,7 @@ sequenceDiagram
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
 
-    Note right of server: The server receives the request and creates a new note with the payload. <br> It returns the address of the list of notes (the "home page")
+    Note right of server: The server receives the request and creates a new note with the payload. <br> It returns the address of the list of notes (the "notes" page)
 
     server-->>browser: The address of the notes : Location: /notes <br> HTML Status Code 302
     deactivate server
