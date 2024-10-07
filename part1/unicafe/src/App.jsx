@@ -17,17 +17,49 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [history, setHistory] = useState([])
 
   const handleGood = () => {
+    setHistory(history.concat(1))
     setGood(good + 1)
   }
 
   const handleNeutral = () => {
+    setHistory(history.concat(0))
     setNeutral(neutral + 1)
   }
 
   const handleBad = () => {
+    setHistory(history.concat(-1))
     setBad(bad + 1)
+  }
+
+  const computeAverage = () => {
+    if (history.length === 0) {
+      return 0
+    } 
+
+    let total = 0
+    for (let index = 0; index < history.length; index++) {
+      total += history[index]
+    }
+    return (total / history.length)
+  }
+
+  const computePositive = () => {
+
+    if (history.length === 0) {
+      return '0 %'
+    } 
+
+    let positiveCount = 0
+    for (let index = 0; index < history.length; index++) {
+      if (history[index] > 0) {
+        positiveCount++
+      }
+    }
+    return ((positiveCount / history.length)*100).toString().concat(' %')
+
   }
 
   return (
@@ -40,6 +72,9 @@ const App = () => {
       <Display label={'Good'} value={good}/>
       <Display label={'Neutral'} value={neutral}/>
       <Display label={'Bad'} value={bad}/>
+      <Display label={'All'} value={good + neutral + bad}/>
+      <Display label={'Average'} value={computeAverage()}/>
+      <Display label={'Positive'} value={computePositive()}/>
     </div>
   )
 }
