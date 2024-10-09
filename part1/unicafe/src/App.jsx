@@ -1,21 +1,26 @@
 import { useState } from 'react'
 
+// Button Component
 const Button = ({onClick, text}) => {
   return (
     <button onClick={onClick}>{text}</button>
   )
 }
 
-const Display = ({label, value}) => {
+// Statistic Line Component (previously called Display in Exercise 1.9)
+const StatisticLine = ({label, value}) => {
   return (
     <div>{label} {value}</div>
   )
 }
 
+// Statistics Component
 const Statistics = (props) => {
 
+  // Extracting the props values
   const {good, neutral, bad, history} = props
 
+  // Helper function to calculate the average feedback using the history of feedbacks
   const computeAverage = () => {
     if (history.length === 0) {
       return 0
@@ -28,6 +33,7 @@ const Statistics = (props) => {
     return (total / history.length)
   }
 
+  // Helper function to calculate the percentage of positive feedback using the history of feedbacks
   const computePositive = () => {
 
     if (history.length === 0) {
@@ -44,6 +50,7 @@ const Statistics = (props) => {
 
   }
 
+  // JSX HTML to render : we only display statistics if the 'history' array is not empty
   if (history.length === 0) {
     return (
       <div>No feedback given</div>
@@ -52,12 +59,12 @@ const Statistics = (props) => {
   else {
     return (
       <div>
-        <Display label={'Good'} value={good}/>
-        <Display label={'Neutral'} value={neutral}/>
-        <Display label={'Bad'} value={bad}/>
-        <Display label={'All'} value={good + neutral + bad}/>
-        <Display label={'Average'} value={computeAverage()}/>
-        <Display label={'Positive'} value={computePositive()}/>
+        <StatisticLine label={'Good'} value={good}/>
+        <StatisticLine label={'Neutral'} value={neutral}/>
+        <StatisticLine label={'Bad'} value={bad}/>
+        <StatisticLine label={'All'} value={good + neutral + bad}/>
+        <StatisticLine label={'Average'} value={computeAverage()}/>
+        <StatisticLine label={'Positive'} value={computePositive()}/>
       </div>
     )
   } 
@@ -65,12 +72,14 @@ const Statistics = (props) => {
 }
 
 const App = () => {
-  // save clicks of each button to its own state
+
+  // App States
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   const [history, setHistory] = useState([])
 
+  // Button Clicks Handler Functions
   const handleGood = () => {
     setHistory(history.concat(1))
     setGood(good + 1)
@@ -86,6 +95,7 @@ const App = () => {
     setBad(bad + 1)
   }
 
+  // JSX HTML to render
   return (
     <div>
       <h1>Give Feedback</h1>
