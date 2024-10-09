@@ -44,16 +44,24 @@ const Statistics = (props) => {
 
   }
 
-  return (
-    <div>
-      <Display label={'Good'} value={good}/>
-      <Display label={'Neutral'} value={neutral}/>
-      <Display label={'Bad'} value={bad}/>
-      <Display label={'All'} value={good + neutral + bad}/>
-      <Display label={'Average'} value={computeAverage()}/>
-      <Display label={'Positive'} value={computePositive()}/>
-    </div>
-  )
+  if (history.length === 0) {
+    return (
+      <div>No feedback given</div>
+    )
+  } 
+  else {
+    return (
+      <div>
+        <Display label={'Good'} value={good}/>
+        <Display label={'Neutral'} value={neutral}/>
+        <Display label={'Bad'} value={bad}/>
+        <Display label={'All'} value={good + neutral + bad}/>
+        <Display label={'Average'} value={computeAverage()}/>
+        <Display label={'Positive'} value={computePositive()}/>
+      </div>
+    )
+  } 
+  
 }
 
 const App = () => {
