@@ -17,6 +17,53 @@ const Anecdote = ({anecdotes, index, votes}) => {
   )
 }
 
+// Top Anecdote Component
+const TopAnecdote = ({anecdotes, votes}) => {
+
+  //Helper Function to find the index of the max value in an array
+  const maxIndexOfArray = (array) => {
+
+    if (array.length === 0) {
+      return -1;
+    }
+    else {
+
+      var maxValue = array[0];
+      var maxIndex = 0
+
+      for (var i = 1; i < array.length; i++) {
+        if (array[i] > maxValue) {
+            maxIndex = i;
+            maxValue = array[i];
+        }
+      }
+
+      return maxIndex
+
+    }
+
+  }
+
+  var maxIndex = maxIndexOfArray(votes)
+
+  if (maxIndex === 0 && votes[0] === 0) {
+    return (
+      <div>
+        <p>No votes yet.</p>
+      </div>
+    )
+  }
+  else {
+    return (
+      <div>
+        <p>{anecdotes[maxIndex]}</p>
+        <p>Has {votes[maxIndex]} votes</p>
+      </div>
+    )
+  }
+  
+}
+
 const App = () => {
 
   const anecdotes = [
@@ -34,8 +81,8 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
-  // Utility Function: Random list index generator
-  const generateRandomIndex = (list) => Math.floor(Math.random() * list.length)
+  // Utility Function: Random array index generator
+  const generateRandomIndex = (array) => Math.floor(Math.random() * array.length)
 
   // Button Clicks Handler Functions
   const handleNextAnecdote = () => {
@@ -50,9 +97,13 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <Anecdote anecdotes={anecdotes} index={selected} votes={votes}/>
       <Button onClick={handleVote} text={"Vote"}/>
       <Button onClick={handleNextAnecdote} text={"Next Anecdote"}/>
+
+      <h1>Anecdote with the most votes</h1>
+      <TopAnecdote anecdotes={anecdotes} votes={votes}/>
     </div>
   )
 }
