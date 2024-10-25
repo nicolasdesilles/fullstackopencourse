@@ -10,7 +10,10 @@ const Button = ({onClick, text}) => {
 // Statistic Line Component (previously called Display in Exercise 1.9)
 const StatisticLine = ({label, value}) => {
   return (
-    <div>{label} {value}</div>
+    <tr>
+      <td>{label}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
@@ -59,12 +62,16 @@ const Statistics = (props) => {
   else {
     return (
       <div>
-        <StatisticLine label={'Good'} value={good}/>
-        <StatisticLine label={'Neutral'} value={neutral}/>
-        <StatisticLine label={'Bad'} value={bad}/>
-        <StatisticLine label={'All'} value={good + neutral + bad}/>
-        <StatisticLine label={'Average'} value={computeAverage()}/>
-        <StatisticLine label={'Positive'} value={computePositive()}/>
+        <table>
+          <tbody>
+            <StatisticLine label={'Good'} value={good}/>
+            <StatisticLine label={'Neutral'} value={neutral}/>
+            <StatisticLine label={'Bad'} value={bad}/>
+            <StatisticLine label={'All'} value={good + neutral + bad}/>
+            <StatisticLine label={'Average'} value={computeAverage()}/>
+            <StatisticLine label={'Positive'} value={computePositive()}/>
+          </tbody>
+        </table>
       </div>
     )
   } 
