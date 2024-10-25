@@ -8,10 +8,11 @@ const Button = ({onClick, text}) => {
 }
 
 // Anecdote Component
-const Anecdote = ({anecdotes, index}) => {
+const Anecdote = ({anecdotes, index, votes}) => {
   return (
     <div>
       <p>{anecdotes[index]}</p>
+      <p>Has {votes[index]} votes</p>
     </div>
   )
 }
@@ -31,6 +32,7 @@ const App = () => {
    
   // App States
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
   // Utility Function: Random list index generator
   const generateRandomIndex = (list) => Math.floor(Math.random() * list.length)
@@ -40,9 +42,16 @@ const App = () => {
     setSelected(generateRandomIndex(anecdotes))
   }
 
+  const handleVote = () => {
+    var votesCopy = [...votes]
+    votesCopy[selected] += 1
+    setVotes(votesCopy)
+  }
+
   return (
     <div>
-      <Anecdote anecdotes={anecdotes} index={selected}/>
+      <Anecdote anecdotes={anecdotes} index={selected} votes={votes}/>
+      <Button onClick={handleVote} text={"Vote"}/>
       <Button onClick={handleNextAnecdote} text={"Next Anecdote"}/>
     </div>
   )
