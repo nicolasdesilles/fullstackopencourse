@@ -18,7 +18,11 @@ const Content = ({course}) => {
 
   const initTotalvalue = 0
   const totalNumEx = course.parts.reduce(
-    (sum, currentPart) => sum + currentPart.exercises,
+    (sum, currentPart) => 
+      {
+        console.log('Adding exercice number for part:', currentPart.name)
+        return sum + currentPart.exercises
+      },
     initTotalvalue
   )
 
