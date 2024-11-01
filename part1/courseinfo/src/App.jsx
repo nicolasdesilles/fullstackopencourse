@@ -23,8 +23,6 @@ const Content = (props) => {
       <Part partTitle={props.parts[2].name} partNumEx={props.parts[2].exercises}  />
     </div>
   )
-
-  return completeContent
 }
 
 const Total = (props) => {
