@@ -90,14 +90,31 @@ const App = () => {
 
   const deletePerson = (id) => {
 
-    if (window.confirm(`Delete ${persons.find(person => person.id == id).name} ?`)) {
+    if (window.confirm(`Delete ${persons.find(person => person.id === id).name} ?`)) {
       personsService
       .deletePerson(id)
-      .then(deletedPerson => {
-        // console.log(deletedPerson)
+      .then(response => {
+        // console.log(response)
         setPersons(persons.filter(person => person.id != id))
       })
     }
+  }
+
+  const updatePersonNumber = (personToChange, newNumber) => {
+    const id = personToChange.id
+    const changedPersonObject = {...personToChange, number: newNumber}
+
+    personsService
+    .update(id, changedPersonObject)
+    .then(response => {
+      setPersons(persons.map(person => person.id === id ? response.data : person))
+      setNewName('')
+      setNewNumber('')
+    })
+    .catch(error => {
+      alert(`The person ${personToChange.name} was deleted from server or does not exist on server`)
+      setPersons(persons.filter(person => person.id !== id))
+    })
   }
 
   const addName = (event) => {
@@ -105,7 +122,10 @@ const App = () => {
 
     const personsNames = persons.map(person => person.name)
     if (personsNames.includes(newName)) {
-      alert(`${newName} is already in the Phonebook`)
+      if (window.confirm(`${newName} already exists in the phonebook. Replace the old number with the new one ?`)) {
+        const personToChange = persons.find(person => person.name === newName)
+        updatePersonNumber(personToChange, newNumber)
+      }
     }
     else {
       const personObject = {
