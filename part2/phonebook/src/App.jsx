@@ -3,17 +3,17 @@ import axios from 'axios'
 
 import personsService from './services/persons'
 
-const Person = ({person}) => {
+const Person = ({person, onDelete}) => {
 
   return (
     <div>
-      {person.name} {person.number}
+      {person.name} {person.number} <button onClick={onDelete}>delete</button>
     </div>
   )
 
 }
 
-const Persons = ({persons, newSearch}) => {
+const Persons = ({persons, newSearch, onDeleteButtonClicked}) => {
 
   return (
     <div>
@@ -21,7 +21,7 @@ const Persons = ({persons, newSearch}) => {
         persons.filter(
           person => (person.name.toLowerCase().includes(newSearch) || person.name.includes(newSearch))
         ).map(person =>
-          <Person key={person.name} person={person}/>
+          <Person key={person.name} person={person} onDelete={() => onDeleteButtonClicked(person.id)}/>
         )
       }
     </div>
@@ -88,6 +88,18 @@ const App = () => {
     setNewSearch(event.target.value)
   }
 
+  const deletePerson = (id) => {
+
+    if (window.confirm(`Delete ${persons.find(person => person.id == id).name} ?`)) {
+      personsService
+      .deletePerson(id)
+      .then(deletedPerson => {
+        // console.log(deletedPerson)
+        setPersons(persons.filter(person => person.id != id))
+      })
+    }
+  }
+
   const addName = (event) => {
     event.preventDefault()
 
@@ -132,7 +144,7 @@ const App = () => {
       
       <h2>Numbers</h2>
 
-      <Persons persons={persons} newSearch={newSearch}/>
+      <Persons persons={persons} newSearch={newSearch} onDeleteButtonClicked={deletePerson}/>
     </div>
   )
 }
