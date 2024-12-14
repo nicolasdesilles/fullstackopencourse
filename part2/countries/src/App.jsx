@@ -10,7 +10,7 @@ const Filter = ({newSearch, onChange}) => {
 
 }
 
-const Results = ({newSearch, searchResults}) => {
+const Results = ({newSearch, searchResults, onShowButtonClicked}) => {
 
   if (searchResults === null || newSearch === '') {
     return (
@@ -32,7 +32,7 @@ const Results = ({newSearch, searchResults}) => {
       <div>
         {
           searchResults.map(country =>
-            <div key={country.cca3}>{country.name.common}</div>
+            <div key={country.cca3}>{country.name.common} <button onClick={() => onShowButtonClicked(country)}>show</button> </div>
           )
         }
       </div>
@@ -65,7 +65,8 @@ const Country = ({country}) => {
   const flagImageURL = country.flags.svg
 
   const flagStyle = {
-    width: '300px'
+    width: '300px',
+    border: '1px solid black'
   }
 
   return (
@@ -112,6 +113,12 @@ function App() {
 
   }
 
+  const handleShowButtonClicked = (country) => {
+
+    setSearchResults([country])
+
+  }
+
   if (fullCountriesData === null) {
     return (
       <div>
@@ -123,7 +130,7 @@ function App() {
     return (
       <div>
         <Filter newSearch={newSearch} onChange={handleNewSearchChange}/>
-        <Results newSearch={newSearch} searchResults={searchResults}/>
+        <Results newSearch={newSearch} searchResults={searchResults} onShowButtonClicked={handleShowButtonClicked}/>
       </div>
     )
   }
