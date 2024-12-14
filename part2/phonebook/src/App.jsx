@@ -166,9 +166,12 @@ const App = () => {
       setPersons(persons.map(person => person.id === id ? response.data : person))
       setNewName('')
       setNewNumber('')
+      setSuccessMessage(`Updated phone number of ${personToChange.name}`)
+      setTimeout(() => setSuccessMessage(null),2000)
     })
     .catch(error => {
-      alert(`The person ${personToChange.name} was deleted from server or does not exist on server`)
+      setErrorMessage(`The person ${personToChange.name} was deleted from server or does not exist on server`)
+      setTimeout(() => setErrorMessage(null),3000)
       setPersons(persons.filter(person => person.id !== id))
     })
   }
@@ -181,8 +184,6 @@ const App = () => {
       if (window.confirm(`${newName} already exists in the phonebook. Replace the old number with the new one ?`)) {
         const personToChange = persons.find(person => person.name === newName)
         updatePersonNumber(personToChange, newNumber)
-        setSuccessMessage(`Updated phone number of ${personToChange.name}`)
-        setTimeout(() => setSuccessMessage(null),2000)
       }
     }
     else {
