@@ -3,6 +3,56 @@ import axios from 'axios'
 
 import personsService from './services/persons'
 
+const SuccessNotification = ({message}) => {
+
+  const successStyle = {
+    width: '800px',
+    color: 'green',
+    fontWeight: 'bold',
+    backgroundColor: 'silver',
+    border: '3px solid green',
+    borderRadius: '5px',
+    padding: '15px',
+    margin: '15px 15px 15px 0px'
+  }
+
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div style={successStyle}>
+      { message }
+    </div>
+  )
+
+}
+
+const ErrorNotification = ({message}) => {
+
+  const errorStyle = {
+    width: '800px',
+    color: 'red',
+    fontWeight: 'bold',
+    backgroundColor: 'silver',
+    border: '5px solid red',
+    borderRadius: '5px',
+    padding: '15px',
+    margin: '15px 15px 15px 0px'
+  }
+
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div style={errorStyle}>
+      { message }
+    </div>
+  )
+
+}
+
 const Person = ({person, onDelete}) => {
 
   return (
@@ -64,6 +114,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personsService
@@ -90,12 +142,16 @@ const App = () => {
 
   const deletePerson = (id) => {
 
-    if (window.confirm(`Delete ${persons.find(person => person.id === id).name} ?`)) {
+    const personToDelete = persons.find(person => person.id === id)
+
+    if (window.confirm(`Delete ${personToDelete.name} ?`)) {
       personsService
       .deletePerson(id)
       .then(response => {
         // console.log(response)
         setPersons(persons.filter(person => person.id != id))
+        setSuccessMessage(`Deleted ${personToDelete.name}`)
+        setTimeout(() => setSuccessMessage(null),2000)
       })
     }
   }
@@ -125,6 +181,8 @@ const App = () => {
       if (window.confirm(`${newName} already exists in the phonebook. Replace the old number with the new one ?`)) {
         const personToChange = persons.find(person => person.name === newName)
         updatePersonNumber(personToChange, newNumber)
+        setSuccessMessage(`Updated phone number of ${personToChange.name}`)
+        setTimeout(() => setSuccessMessage(null),2000)
       }
     }
     else {
@@ -140,6 +198,8 @@ const App = () => {
           setPersons(persons.concat(newPerson))
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(`Added ${newPerson.name}`)
+          setTimeout(() => setSuccessMessage(null),2000)
         })
 
     }
@@ -149,6 +209,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <SuccessNotification message={successMessage}/>
+      <ErrorNotification message={errorMessage}/>
       
       <Filter newSearch={newSearch} onChange={handleNewSearchChange}/>
 
