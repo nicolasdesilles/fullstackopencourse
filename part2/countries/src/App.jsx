@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const api_key = import.meta.env.VITE_OWM_KEY
+
 const Filter = ({newSearch, onChange}) => {
   return (
     <div>
@@ -10,7 +12,7 @@ const Filter = ({newSearch, onChange}) => {
 
 }
 
-const Results = ({newSearch, searchResults, onShowButtonClicked}) => {
+const Results = ({newSearch, searchResults, onShowButtonClicked, weatherData}) => {
 
   if (searchResults === null || newSearch === '') {
     return (
@@ -43,7 +45,7 @@ const Results = ({newSearch, searchResults, onShowButtonClicked}) => {
     //console.log(country)
     return (
       <div>
-        <Country country={country}/>
+        <Country country={country} weatherData={weatherData}/>
       </div>
     )
   }
@@ -56,7 +58,41 @@ const Results = ({newSearch, searchResults, onShowButtonClicked}) => {
   }
 }
 
-const Country = ({country}) => {
+const WeatherReport = ({weatherData}) => {
+
+  if (weatherData === null) {
+    return (
+      <div>
+        Please wait while the weather data is being fetched from the API...
+      </div>
+    )
+  }
+  else {
+    const temperature = weatherData.main.temp
+    const wind = weatherData.wind.speed
+    const iconURL = `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`
+
+    return (
+
+      <div>
+        <div>Temperature {temperature} degrees Celcius</div>
+
+        <div>
+          <img src={iconURL}></img>
+        </div>
+
+        <div>Wind {wind} m/s</div>
+      </div>
+
+    )
+  }
+
+  
+
+}
+
+
+const Country = ({country, weatherData}) => {
 
   const name = country.name.common
   const capital = country.capital[0]
@@ -87,6 +123,11 @@ const Country = ({country}) => {
       <div>
         <img src={flagImageURL} style={flagStyle}></img>
       </div>
+
+      <h2>Weather in {capital}</h2>
+
+      <WeatherReport weatherData={weatherData}/>
+
       
     </div>
   )
@@ -97,6 +138,7 @@ function App() {
   const [newSearch, setNewSearch] = useState('')
   const [searchResults, setSearchResults] = useState(null)
   const [fullCountriesData, setfullCountriesData] = useState(null)
+  const [weatherData, setWeatherData] = useState(null)
 
   useEffect(() => {
     axios
@@ -105,6 +147,45 @@ function App() {
         setfullCountriesData(response.data)
       })
     }, [])
+
+  useEffect(() => {
+    if (searchResults === null) {
+      setWeatherData(null)
+    } 
+    else if (searchResults.length == 1) {
+
+      var latitude = 0
+      var longitude = 0
+
+      axios
+      .get(`http://api.openweathermap.org/geo/1.0/direct?q=${searchResults[0].capital[0]}&limit=5&appid=${api_key}`)
+      .then(response => {
+        console.log(`${searchResults[0].capital[0]} latitude and longitude`)
+        console.log(response.data[0])
+
+        latitude = response.data[0].lat
+        longitude = response.data[0].lon
+
+        axios
+          .get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api_key}&units=metric`)
+          .then(response => {
+            console.log('Weather data')
+            console.log(response.data)
+            setWeatherData(response.data)
+          })
+          .catch(error => {
+            console.log('Error fetching weather data from OpenWeatherMap API')
+          })
+      })
+      .catch(error => {
+        console.log('Error fetching Capital latitude and longitude from OpenWeatherMap API')
+      })
+    }
+    else {
+      setWeatherData(null)
+    }
+    
+    }, [searchResults])
 
   const handleNewSearchChange = (event) => {
     
@@ -130,7 +211,7 @@ function App() {
     return (
       <div>
         <Filter newSearch={newSearch} onChange={handleNewSearchChange}/>
-        <Results newSearch={newSearch} searchResults={searchResults} onShowButtonClicked={handleShowButtonClicked}/>
+        <Results newSearch={newSearch} searchResults={searchResults} onShowButtonClicked={handleShowButtonClicked} weatherData={weatherData}/>
       </div>
     )
   }
