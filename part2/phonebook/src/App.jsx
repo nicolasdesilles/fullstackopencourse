@@ -153,12 +153,14 @@ const App = () => {
         setTimeout(() => setSuccessMessage(null),2000)
       })
     }
+
   }
 
   const updatePersonNumber = (personToChange, newNumber) => {
     const id = personToChange.id
     const changedPersonObject = {...personToChange, number: newNumber}
 
+    /*
     personsService
     .update(id, changedPersonObject)
     .then(response => {
@@ -173,6 +175,7 @@ const App = () => {
       setTimeout(() => setErrorMessage(null),3000)
       setPersons(persons.filter(person => person.id !== id))
     })
+    */
   }
 
   const addName = (event) => {
